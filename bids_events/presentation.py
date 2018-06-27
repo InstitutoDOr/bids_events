@@ -68,12 +68,12 @@ class LogHandler:
             last = len(self.raw) if n == n_trials-1 else trials[n+1][0]
 
             extras = []
-            for col in cols[2:]:
+            for col in cols[1:]:
                 item = filter_lines(self.raw[first:last], col[1], col[2])
                 try:
                     content = item[0][1][col[3]]
                 except:
-                    content = 'na'
+                    content = ''
                 extras.extend([content])
 
             vals.append([onset, duration, code] + extras)
@@ -82,8 +82,13 @@ class LogHandler:
         self.trials = [header] + vals
 
     def export_bids(self, filename):
-        #TODO
-        print('FOI')
+        output = ''
+        for line in self.trials:
+            output += "\t".join([str(i) for i in line]) + "\n"
+
+        # Generating output
+        with open('{}_events.tsv'.format(filename), 'w') as f:
+            f.write(output)
 
     def write_raw(self):
         report(self.raw)
