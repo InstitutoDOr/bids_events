@@ -24,7 +24,8 @@ class LogHandler:
     COL_CODE       = 3
     COL_TIME       = 4
     COL_TTIME      = 5 
-    COL_DURATION   = 7 
+    COL_DURATION   = 7
+    EMPTY_CELL     = 'n/a'
 
     def __init__(self, file):
         log = LogParser(file)
@@ -64,16 +65,18 @@ class LogHandler:
             duration = trial[self.COL_DURATION]
             code = trial[self.COL_CODE]
 
+            # First column is mandatory (used to extract trial onset)
             first = trials[n][0]
             last = len(self.raw) if n == n_trials-1 else trials[n+1][0]
 
+            # Ignoring first column (trial onset)
             extras = []
             for col in cols[1:]:
                 item = filter_lines(self.raw[first:last], col[1], col[2])
                 try:
                     content = item[0][1][col[3]]
                 except:
-                    content = ''
+                    content = self.EMPTY_CELL
                 extras.extend([content])
 
             vals.append([onset, duration, code] + extras)

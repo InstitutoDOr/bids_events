@@ -1,2 +1,5 @@
 *.pyc
 *.tsv
+/dist
+/build
+/*.egg-info

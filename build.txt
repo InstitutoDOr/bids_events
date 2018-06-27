@@ -6,4 +6,4 @@ pip install --user --upgrade twine
 
 twine upload dist/*
 
-#rm -rf dist build*/
+rm -rf dist build *.egg-info

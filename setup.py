@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="bids_events",
-    version="0.0.1",
+    version="0.0.2",
     author="Bruno Melo",
     author_email="bruno.melo@idor.org",
     description="A package to export events using log files from presentation software.",
