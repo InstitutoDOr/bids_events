@@ -10,6 +10,7 @@ pip install bids_events
 
 ## Example of use
 
+### with *Presentation* LOGS
 ```python
 from bids_events.presentation import LogHandler as Log
 
@@ -25,3 +26,5 @@ log = Log('S001-Run1.log')
 log.extract_trials( cols )
 log.export_bids('sub-S001_task-emotion_run-1')
 ```
+
+For a full example, please, check the `./tests` folder.

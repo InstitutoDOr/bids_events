@@ -1,4 +1,5 @@
 import re
+from .Log import Log
 
 # Class to manipulate presentation logs
 class LogParser:
@@ -17,7 +18,7 @@ class LogParser:
         self.events = get_part(content, 'Event Type')
 
 # Class to manipulate presentation logs
-class LogHandler:
+class LogHandler (Log):
     COL_SUBJECT    = 0
     COL_TRIAL      = 1
     COL_EVENT_TYPE = 2
@@ -83,16 +84,7 @@ class LogHandler:
         
         # Returning all data
         self.trials = [header] + vals
-
-    def export_bids(self, filename):
-        output = ''
-        for line in self.trials:
-            output += "\t".join([str(i) for i in line]) + "\n"
-
-        # Generating output
-        with open('{}_events.tsv'.format(filename), 'w') as f:
-            f.write(output)
-
+        
     def write_raw(self):
         report(self.raw)
 
@@ -102,7 +94,7 @@ class LogHandler:
 
 ## GENERAL FUNCTIONS
 def filter_lines(content, column, rfilter):
-    return filter(lambda (i,x): re.findall(rfilter, x[column]), enumerate(content))
+    return filter(lambda (i,x): re.findall(rfilter, x[column]), content)
 
 def report(content):
     for line in content:

@@ -1,5 +1,7 @@
 import sys
-sys.path.append('..')
+sys.path.insert(0,'tests')
+
+import setup_test
 
 from bids_events.presentation import LogHandler as Log
 
