@@ -7,4 +7,4 @@ abspath = os.path.abspath((inspect.stack()[-1])[1])
 dname = os.path.dirname(abspath)
 os.chdir(dname)
 
-sys.path.append('../..')
+sys.path.insert(0, r'..' + os.sep + '..')

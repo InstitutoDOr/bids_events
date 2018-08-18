@@ -10,7 +10,28 @@ pip install bids_events
 
 ## Example of use
 
-### with *Presentation* LOGS
+### Simple example
+```python
+from bids_events.Events import EventHandler
+
+events_h = EventHandler('example_events.tsv')
+events_h.trials = [
+    ['onset', 'duration', 'condition'],
+    [0,   20, 'STOP'],
+    [20,  20, 'GO'],
+    [40,  20, 'STOP'],
+    [60,  20, 'GO'],
+    [80,  20, 'STOP'],
+    [100, 20, 'GO'],
+    [120, 20, 'STOP'],
+    [140, 20, 'GO'],
+    [160, 20, 'STOP'],
+    [180, 20, 'GO'],
+]
+events_h.export_bids()
+```
+
+### Extraction using *Presentation* LOGS
 ```python
 from bids_events.presentation import LogHandler as Log
 
@@ -27,4 +48,4 @@ log.extract_trials( cols )
 log.export_bids('sub-S001_task-emotion_run-1')
 ```
 
-For a full example, please, check the `./tests` folder.
+Check the `./tests` folder to see more detailed examples.

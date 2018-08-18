@@ -1,5 +1,5 @@
 import re
-from .Log import Log
+from .Events import EventHandler
 
 # Class to manipulate presentation logs
 class LogParser:
@@ -18,7 +18,7 @@ class LogParser:
         self.events = get_part(content, 'Event Type')
 
 # Class to manipulate presentation logs
-class LogHandler (Log):
+class LogHandler:
     COL_SUBJECT    = 0
     COL_TRIAL      = 1
     COL_EVENT_TYPE = 2
@@ -32,6 +32,7 @@ class LogHandler (Log):
         log = LogParser(file)
         self.raw    = log.raw
         self.events = log.events
+        self.trials = []
 
     def get_first_pulse_time(self):
         pulses = filter_lines(self.raw, self.COL_EVENT_TYPE, r'Pulse')
@@ -51,6 +52,7 @@ class LogHandler (Log):
             self.raw[i] = line
 
     # Do extraction of all data
+    # First column is the main event - responsible to define each line
     def extract_trials(self, cols):
         self.fix_times()
         trials = filter_lines(self.raw, cols[0][1], cols[0][2])
@@ -68,7 +70,7 @@ class LogHandler (Log):
 
             # First column is mandatory (used to extract trial onset)
             first = trials[n][0]
-            last = len(self.raw) if n == n_trials-1 else trials[n+1][0]
+            last = len(self.raw) if n == (n_trials-1) else trials[n+1][0]
 
             # Ignoring first column (trial onset)
             extras = []
@@ -91,10 +93,14 @@ class LogHandler (Log):
     def write_events(self):
         report(self.events)
 
+    def export_bids(self, filename, suffix = '_events'):
+        events = EventHandler(filename, suffix)
+        events.set_trials(self.trials)
+        events.export_bids()
 
 ## GENERAL FUNCTIONS
 def filter_lines(content, column, rfilter):
-    return filter(lambda (i,x): re.findall(rfilter, x[column]), content)
+    return filter(lambda x: re.findall(rfilter, x[1][column]), enumerate(content))
 
 def report(content):
     for line in content:
