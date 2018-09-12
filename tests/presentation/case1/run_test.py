@@ -1,9 +1,12 @@
+# TEST ENV SET UP
 import sys
 sys.path.insert(0,'tests')
-
 import setup_test
 
+# MAIN PROGRAM
 from bids_events.presentation import LogHandler as Log
+import os
+os.chdir( os.path.dirname(os.path.realpath(__file__)) )
 
 cols = [
     ['trial_type', Log.COL_CODE, r'cue.*'],

@@ -53,7 +53,7 @@ class LogHandler:
 
     # Do extraction of all data
     # First column is the main event - responsible to define each line
-    def extract_trials(self, cols):
+    def extract_trials(self, cols, duration = None, onset_filter = None):
         self.fix_times()
         trials = filter_lines(self.raw, cols[0][1], cols[0][2])
         
@@ -65,8 +65,10 @@ class LogHandler:
         for n in range(n_trials):
             trial = trials[n][1]
             onset = trial[self.COL_TIME]
-            duration = trial[self.COL_DURATION]
+            duration = trial[self.COL_DURATION] if not duration else duration
             code = trial[self.COL_CODE]
+            if callable(onset_filter):
+                onset = onset_filter(onset)
 
             # First column is mandatory (used to extract trial onset)
             first = trials[n][0]
@@ -100,7 +102,7 @@ class LogHandler:
 
 ## GENERAL FUNCTIONS
 def filter_lines(content, column, rfilter):
-    return filter(lambda x: re.findall(rfilter, x[1][column]), enumerate(content))
+    return list( filter(lambda x: re.findall(rfilter, x[1][column]), enumerate(content)) )
 
 def report(content):
     for line in content:
@@ -125,6 +127,8 @@ def last_line(content, first_line):
 # Extract parts of the file
 def get_part(content, first_col):
     n_header = header_line(content, first_col)
+    if not n_header:
+        return None
     n_end = last_line(content, n_header+2)
     data = [content[n_header]]
     data.extend( content[ n_header+2:n_end ] )

@@ -1,8 +1,12 @@
+# TEST ENV SET UP
 import sys
 sys.path.insert(0,'tests')
 import setup_test
 
+# MAIN PROGRAM
 from bids_events.Events import EventHandler
+import os
+os.chdir( os.path.dirname(os.path.realpath(__file__)) )
 
 # Saving data
 events_h = EventHandler('example_events.tsv')

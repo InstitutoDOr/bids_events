@@ -2,9 +2,7 @@ import inspect
 import sys
 import os
 
-# Preparing test environment
-abspath = os.path.abspath((inspect.stack()[-1])[1])
-dname = os.path.dirname(abspath)
-os.chdir(dname)
-
-sys.path.insert(0, r'..' + os.sep + '..')
+# Inserting pack in path
+dname = os.path.dirname(os.path.realpath(__file__))
+pack_dir =  os.path.join( dname, '..')
+sys.path.insert(0, os.path.realpath(pack_dir))
