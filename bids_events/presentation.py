@@ -36,7 +36,10 @@ class LogHandler:
 
     def get_first_pulse_time(self):
         pulses = filter_lines(self.raw, self.COL_EVENT_TYPE, r'Pulse')
-        return int( pulses[0][1][self.COL_TIME] )
+        if pulses:
+            return int( pulses[0][1][self.COL_TIME] )
+        else:
+            return 0
 
     def fix_times(self):
         first_pulse = self.get_first_pulse_time()
@@ -88,7 +91,49 @@ class LogHandler:
         
         # Returning all data
         self.trials = [header] + vals
-        
+
+    # Function to manipulate values
+    def remove_column(self, column):
+        c_idx = self.column_pos(column)
+        # Ignores header
+        for idx, trial in enumerate(self.trials):
+            del self.trials[idx][c_idx]
+
+    # Function to manipulate values
+    def filter_column(self, column, filter_col):
+        c_idx = self.column_pos(column)
+        # Ignores header
+        for idx, trial in enumerate(self.trials[1:]):
+            self.trials[idx+1][c_idx] = filter_col( trial[c_idx] )
+
+    # Function to create or change columns computing values using a heuristic function
+    def compute_column(self, column, *other_cols, heuristic):
+        # Get or create the column
+        c_idx = self.column_pos(column)
+        if not c_idx:
+            self.trials[0].append(column)
+            c_idx = len(self.trials[0]) - 1
+
+        # Ignores header
+        for idx, trial in enumerate(self.trials[1:]):
+            inputs = []
+            for col in other_cols:
+                col = self.column_pos(col)
+                inputs.append( trial[col] )
+            comp_value = heuristic( *inputs )
+            if c_idx == len(trial):
+                self.trials[idx+1].append(comp_value)
+            else:
+                self.trials[idx+1][c_idx] = comp_value
+
+    def column_pos(self, column):
+        header = self.trials[0]
+        if isinstance(column, str) and column in header:
+            return header.index(column)
+        if isinstance(column, int) and len(header) > column:
+            return column
+        return None
+
     def write_raw(self):
         report(self.raw)
 
@@ -122,7 +167,7 @@ def last_line(content, first_line):
     for n_line in range(first_line, n_lines):
         if content[n_line][0] == '':
             return n_line-1
-    return n_lines-1
+    return n_lines
 
 # Extract parts of the file
 def get_part(content, first_col):
