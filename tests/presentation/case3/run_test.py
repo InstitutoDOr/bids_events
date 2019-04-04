@@ -11,6 +11,8 @@ os.chdir( os.path.dirname(os.path.realpath(__file__)) )
 
 cols = [
     ['fix', Log.COL_CODE, r'cue'],
+    ['subj', Log.COL_CODE, r'cue'],
+    ['run', Log.COL_CODE, r'cue'],
     ['category', Log.COL_EVENT_TYPE, r'Video', Log.COL_CODE],
     ['clip', Log.COL_EVENT_TYPE, r'Video', Log.COL_CODE],
     ['auc', Log.COL_CODE, r'AUC=.*', Log.COL_CODE],
@@ -34,8 +36,10 @@ for f in files:
     log.filter_column('auc', lambda x: re.sub(r'.*=', '', x))
     log.filter_column('auc/max', lambda x: re.sub(r'.*=', '', x))
     log.filter_column('peak', lambda x: re.sub(r'.*=', '', x))
-    log.compute_column('duration', 'onset', 'video_end', heuristic=(lambda x,y: y-x) )
-    log.compute_column('video_duration', 'video_start', 'video_end', heuristic=(lambda x,y: y-x))
+    log.compute_column('duration', (lambda x,y: y-x), 'onset', 'video_end' )
+    log.compute_column('video_duration', (lambda x,y: y-x), 'video_start', 'video_end')
+    log.compute_column('subj', lambda x: subj, 'subj' )
+    log.compute_column('run', lambda x: run, 'run' )
     log.remove_column('fix')
 
     log.export_bids('sub-{}_task-EFFORT_run-{}'.format(subj, run))

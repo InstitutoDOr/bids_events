@@ -101,13 +101,10 @@ class LogHandler:
 
     # Function to manipulate values
     def filter_column(self, column, filter_col):
-        c_idx = self.column_pos(column)
-        # Ignores header
-        for idx, trial in enumerate(self.trials[1:]):
-            self.trials[idx+1][c_idx] = filter_col( trial[c_idx] )
+        self.compute_column( column, filter_col, column )
 
     # Function to create or change columns computing values using a heuristic function
-    def compute_column(self, column, *other_cols, heuristic):
+    def compute_column(self, column, heuristic, *other_cols):
         # Get or create the column
         c_idx = self.column_pos(column)
         if not c_idx:
