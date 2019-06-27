@@ -107,7 +107,7 @@ class LogHandler:
     def compute_column(self, column, heuristic, *other_cols):
         # Get or create the column
         c_idx = self.column_pos(column)
-        if not c_idx:
+        if not c_idx and c_idx != 0:
             self.trials[0].append(column)
             c_idx = len(self.trials[0]) - 1
 
