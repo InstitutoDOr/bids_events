@@ -98,6 +98,15 @@ class LogHandler:
         # Ignores header
         for idx, trial in enumerate(self.trials):
             del self.trials[idx][c_idx]
+    
+    # Print all lines
+    def print(self, header = True):
+        line_header = self.trials[0]
+        lines = self.trials[1:]
+
+        if header: print(line_header)
+        for line in lines:
+            print(line)
 
     # Function to manipulate values
     def filter_column(self, column, filter_col):
